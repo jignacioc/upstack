@@ -1,0 +1,29 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'default-receiver'  # Se define un receptor predeterminado para evitar errores
+  group_by: ['alertname', 'instance']
+  group_wait: 1s
+  group_interval: 1m
+  repeat_interval: 10m
+  routes:
+    - receiver: 'webhook-receiver'            # Primer receptor
+ r     continue: true
+    - receiver: 'webhook-receiver-historico' # Segundo receptor
+
+receivers:
+  - name: 'default-receiver'
+    webhook_configs:
+      - url: 'http://django:8000/alertas/webhook/'
+        send_resolved: true
+
+  - name: 'webhook-receiver'
+    webhook_configs:
+      - url: 'http://django:8000/alertas/webhook/'
+        send_resolved: true
+
+  - name: 'webhook-receiver-historico'
+    webhook_configs:
+      - url: 'http://django:8000/alertas/historico/'
+        send_resolved: true

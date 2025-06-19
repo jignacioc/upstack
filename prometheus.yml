@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s  # Intervalo de evaluación de reglas de alerta
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - 'alertmanager:9093'  # Usa el nombre del servicio de alertmanager en Docker
+rule_files:
+  - '/etc/prometheus/alert_rules.yml'  # Ruta dentro del contenedor
+
+scrape_configs:
+  - job_name: 'monitoreo'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['django:8001']
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
